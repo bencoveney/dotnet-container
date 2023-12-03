@@ -1,5 +1,12 @@
 # dotnet-container
 
+## Goal
+
+- Build simple dotnet web project.
+- Publish to github container registry for AWS (Lightsail?) deployment.
+- Refresh + demonstrate good containerisation/CI practices.
+- Simple launchpad codebase for future backend projects.
+
 ## Local set up (Windows WSL)
 
 - [Install WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
