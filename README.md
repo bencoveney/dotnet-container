@@ -14,6 +14,13 @@ $ dotnet new web -o web
 $ dotnet sln add web
 ```
 
+## Running on local machine
+
+```bash
+$ dotnet build
+$ dotnet run --project web
+```
+
 ## References
 
 - [Dotnet console docker sample](https://github.com/dotnet/dotnet-docker/blob/main/samples/dotnetapp/README.md)
