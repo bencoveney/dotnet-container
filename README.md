@@ -21,6 +21,15 @@ $ dotnet build
 $ dotnet run --project web
 ```
 
+## Running in container
+
+See [dockerfile](./web/Dockerfile).
+
+```bash
+$ docker build -t web ./web
+$ docker run web
+```
+
 ## References
 
 - [Dotnet console docker sample](https://github.com/dotnet/dotnet-docker/blob/main/samples/dotnetapp/README.md)

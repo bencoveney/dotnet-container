@@ -9,8 +9,8 @@ COPY . .
 RUN dotnet publish -a $TARGETARCH --no-restore -o /app
 
 
-FROM mcr.microsoft.com/dotnet/runtime:8.0
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 COPY --from=build /app .
 USER $APP_UID
-ENTRYPOINT ["./dotnetapp"]
+ENTRYPOINT ["./web"]
