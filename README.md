@@ -35,8 +35,8 @@ $ dotnet run --project web
 See [dockerfile](./web/Dockerfile).
 
 ```bash
-$ docker build -t web ./web
-$ docker run -p 8080:8080 web
+$ docker build -t dotnet-container:dev ./web
+$ docker run -p 8080:8080 dotnet-container:dev
 ```
 
 [View output](http://localhost:8080)
