@@ -28,14 +28,18 @@ $ dotnet build
 $ dotnet run --project web
 ```
 
+[View output](http://localhost:5112)
+
 ## Running in container
 
 See [dockerfile](./web/Dockerfile).
 
 ```bash
 $ docker build -t web ./web
-$ docker run web
+$ docker run -p 8080:8080 web
 ```
+
+[View output](http://localhost:8080)
 
 ## References
 
