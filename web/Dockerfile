@@ -6,7 +6,7 @@ COPY *.csproj .
 RUN dotnet restore -a $TARGETARCH
 
 COPY . .
-RUN dotnet publish -a $TARGETARCH --no-restore -o /app
+RUN dotnet publish -c Release -a $TARGETARCH --no-restore -o /app
 
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
