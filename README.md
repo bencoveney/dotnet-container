@@ -16,7 +16,7 @@ The goals of this project are:
 ## Quick start
 
 ```bash
-$ docker compose up --build
+$ PROJECT=${PWD##*/} docker compose up --build
 ```
 
 ## API
@@ -74,5 +74,6 @@ $ docker run --name ui -p 8081:8081 ${PWD##*/}-ui:dev
 - Versioning of packages.
 - `esbuild` build for UI.
 - `env` file for port configuration etc, to support deployment.
+- Certificates for SSL.
 - Deployment steps for AWS (lightsail or other).
 - Maybe write/diagram some choices made.
