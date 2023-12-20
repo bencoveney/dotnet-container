@@ -7,13 +7,13 @@ The goals of this project are:
 - Refresh + demonstrate best practices for containerisation/CI.
 - Simple launchpad codebase for future full-stack projects.
 
-## API
-
-### Local set up (Windows WSL)
+### Prerequisites (Windows WSL)
 
 - [Install WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 - [Ensure docker is set up with WSL](https://docs.docker.com/desktop/wsl/)
 - [Install dotnet in WSL](https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu)
+
+## API
 
 ### Running locally
 
@@ -33,6 +33,25 @@ $ docker run --name api -p 8080:8080 ${PWD##*/}-api:dev
 
 [View output](http://localhost:8080)
 
+## UI
+
+### Running locally
+
+```bash
+$ npx http-server ./ui/static/
+```
+
+[View output](http://localhost:8080/)
+
+### Running in Docker
+
+```bash
+$ docker build -t ${PWD##*/}-ui:dev ./ui
+$ docker run --name ui -p 8080:8080 ${PWD##*/}-ui:dev
+```
+
+[View output](http://localhost:8080)
+
 ## References
 
 - [Dotnet console docker sample](https://github.com/dotnet/dotnet-docker/blob/main/samples/dotnetapp/README.md)
@@ -40,3 +59,4 @@ $ docker run --name api -p 8080:8080 ${PWD##*/}-api:dev
 - [Dotnet CLI project creation](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-new)
 - [Containerizing dotnet](https://chris-ayers.com/2023/12/03/containerizing-dotnet-part-1)
 - [Publishing to Github packages](https://docs.github.com/en/actions/publishing-packages/publishing-docker-images)
+- [Serve Static Files with Nginx and Docker](https://sabe.io/tutorials/serve-static-files-nginx-docker)
