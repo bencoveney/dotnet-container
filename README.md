@@ -19,6 +19,27 @@ The goals of this project are:
 $ PROJECT=${PWD##*/} docker compose up --build
 ```
 
+## Project Structure
+
+```mermaid
+graph LR
+  host-->nginx
+  nginx-->dotnet
+  host["Cloud entry point"]
+  subgraph api["API"]
+    direction TB
+    dotnet["`Dotnet ASP
+    _Exposes port 8080_`"]
+  end
+  subgraph ui["UI"]
+    direction TB
+    nginx["`Dotnet ASP
+    _Exposes port 8080_`"]
+    static["Static Assets"]
+    nginx-->static
+  end
+```
+
 ## API
 
 ### Running locally
