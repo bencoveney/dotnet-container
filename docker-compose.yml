@@ -1,0 +1,19 @@
+services:
+  api:
+    container_name: $PROJECT-api
+    image: $PROJECT-api:dev
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8080:8080"
+  ui:
+    container_name: $PROJECT-ui
+    image: $PROJECT-ui:dev
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8081:8081"

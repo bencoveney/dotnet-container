@@ -7,11 +7,17 @@ The goals of this project are:
 - Refresh + demonstrate best practices for containerisation/CI.
 - Simple launchpad codebase for future full-stack projects.
 
-### Prerequisites (Windows WSL)
+## Prerequisites (Windows WSL)
 
 - [Install WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 - [Ensure docker is set up with WSL](https://docs.docker.com/desktop/wsl/)
 - [Install dotnet in WSL](https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu)
+
+## Quick start
+
+```bash
+$ docker compose up --build
+```
 
 ## API
 
@@ -38,19 +44,19 @@ $ docker run --name api -p 8080:8080 ${PWD##*/}-api:dev
 ### Running locally
 
 ```bash
-$ npx http-server ./ui/static/
+$ npx http-server ./ui/static/ -p 8081
 ```
 
-[View output](http://localhost:8080/)
+[View output](http://localhost:8081/)
 
 ### Running in Docker
 
 ```bash
 $ docker build -t ${PWD##*/}-ui:dev ./ui
-$ docker run --name ui -p 8080:8080 ${PWD##*/}-ui:dev
+$ docker run --name ui -p 8081:8081 ${PWD##*/}-ui:dev
 ```
 
-[View output](http://localhost:8080)
+[View output](http://localhost:8081)
 
 ## References
 
@@ -60,3 +66,12 @@ $ docker run --name ui -p 8080:8080 ${PWD##*/}-ui:dev
 - [Containerizing dotnet](https://chris-ayers.com/2023/12/03/containerizing-dotnet-part-1)
 - [Publishing to Github packages](https://docs.github.com/en/actions/publishing-packages/publishing-docker-images)
 - [Serve Static Files with Nginx and Docker](https://sabe.io/tutorials/serve-static-files-nginx-docker)
+
+## TODO
+
+- `http-server` proxy configuration.
+- CI for actions.
+- `esbuild` build for UI.
+- `env` file for port configuration etc, to support deployment.
+- Deployment steps for AWS (lightsail or other).
+- Maybe write/diagram some choices made.
