@@ -28,13 +28,11 @@ graph LR
   host["Cloud entry point"]
   subgraph api["API"]
     direction TB
-    dotnet["`Dotnet ASP
-    _Exposes port 8080_`"]
+    dotnet["Dotnet ASP (:8080)"]
   end
   subgraph ui["UI"]
     direction TB
-    nginx["`Dotnet ASP
-    _Exposes port 8080_`"]
+    nginx["NGINX (:8080)"]
     static["Static Assets"]
     nginx-->static
   end
