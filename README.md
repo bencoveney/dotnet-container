@@ -1,42 +1,34 @@
 # dotnet-container
 
-## Goal
+The goals of this project are:
 
-- Build simple dotnet web project.
-- Publish to github container registry for AWS (Lightsail?) deployment.
-- Refresh + demonstrate good containerisation/CI practices.
-- Simple launchpad codebase for future backend projects.
+- Build a simple containerised web project backed by a dotnet API.
+- Include CI for publishing to the Github container registry.
+- Refresh + demonstrate best practices for containerisation/CI.
+- Simple launchpad codebase for future full-stack projects.
 
-## Local set up (Windows WSL)
+## API
+
+### Local set up (Windows WSL)
 
 - [Install WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 - [Ensure docker is set up with WSL](https://docs.docker.com/desktop/wsl/)
 - [Install dotnet in WSL](https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu)
 
-## Creating the app
+### Running locally
 
 ```bash
-$ dotnet new sln
-$ dotnet new web -o web
-$ dotnet sln add web
-```
-
-## Running on local machine
-
-```bash
-$ dotnet build
-$ dotnet run --project web
+$ dotnet build api
+$ dotnet run --project api
 ```
 
 [View output](http://localhost:5112)
 
-## Running in container
-
-See [dockerfile](./web/Dockerfile).
+### Running in Docker
 
 ```bash
-$ docker build -t dotnet-container:dev ./web
-$ docker run -p 8080:8080 dotnet-container:dev
+$ docker build -t ${PWD##*/}-api:dev ./api
+$ docker run --name api -p 8080:8080 ${PWD##*/}-api:dev
 ```
 
 [View output](http://localhost:8080)

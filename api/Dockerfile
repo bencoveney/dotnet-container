@@ -13,4 +13,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app .
 USER $APP_UID
-ENTRYPOINT ["./web"]
+ENTRYPOINT ["./api"]
