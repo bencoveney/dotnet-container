@@ -2,7 +2,10 @@ name: Build Containers
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - "main"
+    tags:
+      - "v*.*.*"
 
 jobs:
   buildApi:
@@ -23,7 +26,14 @@ jobs:
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: ghcr.io/${{ github.repository }}-api
-          tags: type=sha
+          flavor: |
+            latest=auto
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
       - name: Build and push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
@@ -50,7 +60,12 @@ jobs:
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: ghcr.io/${{ github.repository }}-ui
-          tags: type=sha
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
       - name: Build and push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:

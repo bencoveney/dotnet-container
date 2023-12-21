@@ -89,8 +89,6 @@ $ docker run --name ui -p 8081:8081 ${PWD##*/}-ui:dev
 ## TODO
 
 - `http-server` proxy configuration.
-- CI for actions.
-- Versioning of packages.
 - `esbuild` build for UI.
 - `env` file for port configuration etc, to support deployment.
 - Certificates for SSL.
