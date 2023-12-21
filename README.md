@@ -48,6 +48,7 @@ $ dotnet run --project api
 ```
 
 [View output](http://localhost:5112)
+[Swagger](http://localhost:5112/swagger/)
 
 ### Running in Docker
 
@@ -76,6 +77,14 @@ $ docker run --name ui -p 8081:8081 ${PWD##*/}-ui:dev
 ```
 
 [View output](http://localhost:8081)
+
+## Clean
+
+```bash
+$ dotnet clean api
+$ dotnet nuget locals all --clear
+$ docker system prune --volumes -a -f
+```
 
 ## References
 
