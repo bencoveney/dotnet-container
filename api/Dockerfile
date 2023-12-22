@@ -5,12 +5,14 @@ WORKDIR /source
 COPY *.csproj .
 RUN dotnet restore -a $TARGETARCH
 
+# https://github.com/dotnet/sdk/issues/37291
 COPY . .
-RUN dotnet publish -c Release -a $TARGETARCH --no-restore -o /app
+RUN dotnet publish -c Release -a $TARGETARCH -o /app
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app .
-EXPOSE 8080
+ENV ASPNETCORE_HTTP_PORTS=80
+EXPOSE 80
 USER $APP_UID
 ENTRYPOINT ["./api"]

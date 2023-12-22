@@ -28,7 +28,7 @@ graph LR
   host["Cloud entry point"]
   subgraph api["API"]
     direction TB
-    dotnet["Dotnet ASP (:8080)"]
+    dotnet["Dotnet ASP (:80)"]
   end
   subgraph ui["UI"]
     direction TB
@@ -40,6 +40,15 @@ graph LR
 
 ## API
 
+The API binds to the following ports:
+
+- `:80` for HTTP in production (exposed by the container).
+- `:5000` for HTTP in development.
+
+The API does not expose an HTTPS endpoint.
+
+It is assumed the API server will not be directly exposed to the network, and instead traffic will instead be routed through the UI container.
+
 ### Running locally
 
 ```bash
@@ -47,17 +56,17 @@ $ dotnet build api
 $ dotnet run --project api
 ```
 
-[View output](http://localhost:5112)
-[Swagger](http://localhost:5112/swagger/)
+[View output](http://localhost:5000)
+[Swagger](http://localhost:5000/swagger/)
 
-### Running in Docker
+### Running locally in Docker
 
 ```bash
 $ docker build -t ${PWD##*/}-api:dev ./api
-$ docker run --name api -p 8080:8080 ${PWD##*/}-api:dev
+$ docker run --name api -p 5000:80 ${PWD##*/}-api:dev
 ```
 
-[View output](http://localhost:8080)
+[View output](http://localhost:5000)
 
 ## UI
 
@@ -78,14 +87,6 @@ $ docker run --name ui -p 8081:8081 ${PWD##*/}-ui:dev
 
 [View output](http://localhost:8081)
 
-## Clean
-
-```bash
-$ dotnet clean api
-$ dotnet nuget locals all --clear
-$ docker system prune --volumes -a -f
-```
-
 ## References
 
 - [Dotnet console docker sample](https://github.com/dotnet/dotnet-docker/blob/main/samples/dotnetapp/README.md)
@@ -97,9 +98,10 @@ $ docker system prune --volumes -a -f
 
 ## TODO
 
-- `http-server` proxy configuration.
+- Proxy configuration for UI - Need dev mode + NGINX config. NGINX currently references `docker compose` hosts.
 - `esbuild` build for UI.
 - `env` file for port configuration etc, to support deployment.
 - Certificates for SSL.
 - Deployment steps for AWS (lightsail or other).
 - Maybe write/diagram some choices made.
+- After docker compose - `http://localhost:8081/api/` works but `http://localhost:8081/api` does not.

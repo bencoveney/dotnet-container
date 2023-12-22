@@ -7,13 +7,15 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "8080:8080"
+      - "5000:80"
   ui:
     container_name: $PROJECT-ui
     image: $PROJECT-ui:dev
     build:
       context: ./ui
       dockerfile: Dockerfile
+    depends_on:
+      - api
     restart: always
     ports:
       - "8081:8080"
