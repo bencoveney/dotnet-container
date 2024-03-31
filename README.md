@@ -24,7 +24,7 @@ $ PROJECT=${PWD##*/} docker compose up --build
 
 [View UI](http://localhost:8081/) - [View API](http://localhost:8081/api/)
 
-Note: For many of the commands in the project, we rely on having a project name configured to name containers, packages etc. We use `${PWD##*/}` for this to grab the current directory name, but you can name it however you prefer.
+For many of the commands in the project, we rely on having a project name configured to name containers, packages etc. We use `${PWD##*/}` for this to grab the current directory name, but you can name it however you prefer.
 
 ## Project Structure
 
@@ -45,12 +45,19 @@ graph LR
   end
 ```
 
+This project does not define much infrastructure by design, and instead provides a minimal set of preconfigured tools. This enables you to extend in the future depending on your project's needs. For example, you might want to:
+
+- Serve static files from S3 instead of from the UI container.
+- Replace the front-end NGINX server with a node SSR framework like Next.
+- Retain the front-end and use a different technology for the backend.
+- Add additional backend servers, or a database.
+
 ## API
 
 The API binds to the following ports:
 
-- `:80` for HTTP in production (exposed by the container).
-- `:5000` for HTTP in development.
+- `:80` for HTTP in production (when running in a container).
+- `:5000` for HTTP in development (when running locally).
 
 The API does not expose an HTTPS endpoint. It is assumed the API server will not be directly exposed to the network, and instead traffic will instead be routed through the UI container.
 
@@ -67,7 +74,7 @@ $ dotnet run --project api
 
 ```bash
 $ docker build -t ${PWD##*/}-api:dev ./api
-$ docker run --name api -p 5000:80 ${PWD##*/}-api:dev
+$ docker run --rm --name api -p 5000:80 ${PWD##*/}-api:dev
 ```
 
 [View API](http://localhost:5000)
@@ -76,42 +83,61 @@ $ docker run --name api -p 5000:80 ${PWD##*/}-api:dev
 
 The UI binds to the following ports:
 
-- `:8081` for HTTP in production.
-- `:8081` for HTTP in development.
+- `:8081` for HTTP in production (when running in a container).
+- `:5002` for HTTP in development (when running locally).
+
+The UI expects to be able to find the API at the following location:
+
+- `http://api:80/` in production (when running in a container).
+- `http://localhost` in development (when running locally).
+
+To keep the project as flexible as possible, the UI only has 2 `npm` development dependencies:
+
+- `typescript` for checking TypeScript code.
+- `esbuild` for bundling.
 
 ### Running locally
 
+For development builds:
+
+- The UI is bundled by `esbuild`
+- A node server is configured to allow:
+  - Access to the bundled files.
+  - Proxied access to the API (under `/api/`).
+
 ```bash
-$ npx http-server ./ui/static/ -p 8081
+$ npm --prefix ui run dev
 ```
 
 [View UI](http://localhost:8081/)
+
+[NVM](https://github.com/nvm-sh/nvm) is recommended for managing node versions - see `.nvmrc`.
 
 ### Running in Docker
 
 For production builds:
 
-- The UI is bundled as static files and included in the container.
+- The UI is bundled by `esbuild` and included in the container.
 - An NGINX server is configured to allow:
   - Access to the bundled files.
-  - Proxied access to the API.
+  - Proxied access to the API (under `/api/`).
+
+The following commands would start the UI in isolation, however by default NGINX cannot reach the backend at `http://api:80/` (unless started within `docker-compose`).
 
 ```bash
 $ docker build -t ${PWD##*/}-ui:dev ./ui
-$ docker run --name ui -p 8081:8081 ${PWD##*/}-ui:dev
+$ docker run --rm --name ui -p 8081:8080 ${PWD##*/}-ui:dev
 ```
 
-[View UI](http://localhost:8081)
+You will need to use a docker network to connect them together and perform similar port mappings yourself:
 
-## Extending
+```bash
+$ docker network create dotnet-container
+$ docker run --rm --network dotnet-container --name api -p 5000:80 ${PWD##*/}-api:dev
+$ docker run --rm --network dotnet-container --name ui -p 8081:8080 ${PWD##*/}-ui:dev
+```
 
-This project does not define much infrastructure by design, and instead provides a minimal set of preconfigured tools.
-
-You may wish to extend in the future depending on your project's needs. For example, you might want to:
-
-- Serve static files from S3 instead of from the UI container.
-- Replace the front-end NGINX server with a node SSR framework like Next.
-- Add additional backend servers, or a database.
+[View UI](http://localhost:8080)
 
 ## References
 
@@ -121,16 +147,14 @@ You may wish to extend in the future depending on your project's needs. For exam
 - [Containerizing dotnet](https://chris-ayers.com/2023/12/03/containerizing-dotnet-part-1)
 - [Publishing to Github packages](https://docs.github.com/en/actions/publishing-packages/publishing-docker-images)
 - [Serve Static Files with Nginx and Docker](https://sabe.io/tutorials/serve-static-files-nginx-docker)
+- [ESBuild dev proxy](https://esbuild.github.io/api/#serve-proxy)
 
 ## TODO
 
-- Proxy configuration for UI - Need dev mode + NGINX config. NGINX currently references `docker compose` hosts.
-- `esbuild` build for UI.
 - `env` file for port configuration etc, to support deployment.
 - Certificates for SSL.
   - https://letsencrypt.org/docs/certificates-for-localhost/
   - https://phoenixnap.com/kb/letsencrypt-docker
 - Deployment steps for AWS (lightsail or other).
-- Maybe write/diagram some choices made.
-- Pin node version.
 - Think about logs, database.
+- Add cache busting and/or `/info` path - integrate git hash somehow.
