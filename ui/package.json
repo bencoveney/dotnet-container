@@ -1,13 +1,15 @@
 {
   "private": true,
   "type": "module",
+  "dependencies": {
+    "esbuild": "^0.20.2"
+  },
   "devDependencies": {
-    "esbuild": "^0.20.2",
     "typescript": "^5.4.3"
   },
   "scripts": {
     "dev": "node ./esbuild.dev.js",
-    "prod": "npm run typecheck && node ./esbuild.prod.js",
+    "prod": "node ./esbuild.prod.js",
     "typecheck": "tsc -noEmit"
   }
 }

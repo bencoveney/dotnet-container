@@ -152,9 +152,13 @@ $ docker run --rm --network dotnet-container --name ui -p 8081:8080 ${PWD##*/}-u
 ## TODO
 
 - `env` file for port configuration etc, to support deployment.
+  - https://www.baeldung.com/linux/nginx-config-environment-variables
 - Certificates for SSL.
   - https://letsencrypt.org/docs/certificates-for-localhost/
   - https://phoenixnap.com/kb/letsencrypt-docker
 - Deployment steps for AWS (lightsail or other).
+  - https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-container-services-deployments.html#creating-deployments-public-endpoint
+  - docker pull ghcr.io/bencoveney/dotnet-container-ui:main
+  - docker pull ghcr.io/bencoveney/dotnet-container-api:main
 - Think about logs, database.
 - Add cache busting and/or `/info` path - integrate git hash somehow.
