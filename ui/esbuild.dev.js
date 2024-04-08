@@ -5,13 +5,15 @@ import {
   cleanDirectory,
   copyAssets,
   staticAssetsPath,
+  loadEnvFile,
 } from "./esbuild.common.js";
 
+loadEnvFile("./.env");
 const proxyPort = 5001;
 const esBuildPort = 5002;
-const apiPort = 5000;
-const apiPath = "/api/";
-const localhost = "localhost";
+const apiPort = 5000; // process.env.API_PORT
+const apiPath = process.env.API_PATH;
+const localhost = "localhost"; // process.env.API_HOST
 
 cleanDirectory(buildConfig.outdir);
 copyAssets(staticAssetsPath, buildConfig.outdir);

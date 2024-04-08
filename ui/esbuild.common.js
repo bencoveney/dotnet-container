@@ -23,3 +23,12 @@ export function cleanDirectory(dir) {
 export function copyAssets(from, to) {
   fs.cpSync(from, to, { recursive: true });
 }
+
+export function loadEnvFile(from) {
+  const content = fs.readFileSync(from, "utf8");
+  const lines = content.split(/\r?\n/).filter((line) => !!line);
+  lines.forEach((line) => {
+    const [key, value] = line.split("=").map((val) => val.trim());
+    process.env[key] = value;
+  });
+}
