@@ -9,4 +9,5 @@ RUN npm run prod
 FROM nginx:alpine
 WORKDIR /app
 COPY --from=build /app/build .
-COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx/templates/ /etc/nginx/templates/

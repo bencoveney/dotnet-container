@@ -19,7 +19,8 @@ The goals of this project are:
 ## Quick start
 
 ```bash
-$ PROJECT=${PWD##*/} docker compose up --build
+cp ./ui/.env.example ./ui/.env
+PROJECT=${PWD##*/} docker compose up --build
 ```
 
 [View UI](http://localhost:8081/) - [View API](http://localhost:8081/api/)
@@ -64,8 +65,8 @@ The API does not expose an HTTPS endpoint. It is assumed the API server will not
 ### Running locally
 
 ```bash
-$ dotnet build api
-$ dotnet run --project api
+dotnet build api
+dotnet run --project api
 ```
 
 [View API](http://localhost:5000) - [View Swagger](http://localhost:5000/swagger/)
@@ -73,8 +74,8 @@ $ dotnet run --project api
 ### Running in Docker
 
 ```bash
-$ docker build -t ${PWD##*/}-api:dev ./api
-$ docker run --rm --name api -p 5000:80 ${PWD##*/}-api:dev
+docker build -t ${PWD##*/}-api:dev ./api
+docker run --rm --name api -p 5000:80 ${PWD##*/}-api:dev
 ```
 
 [View API](http://localhost:5000)
@@ -106,7 +107,7 @@ For development builds:
   - Proxied access to the API (under `/api/`).
 
 ```bash
-$ npm --prefix ui run dev
+npm --prefix ui run dev
 ```
 
 [View UI](http://localhost:8081/)
@@ -125,19 +126,36 @@ For production builds:
 The following commands would start the UI in isolation, however by default NGINX cannot reach the backend at `http://api:80/` (unless started within `docker-compose`).
 
 ```bash
-$ docker build -t ${PWD##*/}-ui:dev ./ui
-$ docker run --rm --name ui -p 8081:8080 ${PWD##*/}-ui:dev
+docker build -t ${PWD##*/}-ui:dev ./ui
+docker run --rm --env-file ./ui/.env --name ui -p 8081:8080 ${PWD##*/}-ui:dev
 ```
 
 You will need to use a docker network to connect them together and perform similar port mappings yourself:
 
 ```bash
-$ docker network create dotnet-container
-$ docker run --rm --network dotnet-container --name api -p 5000:80 ${PWD##*/}-api:dev
-$ docker run --rm --network dotnet-container --name ui -p 8081:8080 ${PWD##*/}-ui:dev
+docker network create dotnet-container
+docker run --rm --network dotnet-container --name api -p 5000:80 ${PWD##*/}-api:dev
+docker run --rm --network dotnet-container --env-file ./ui/.env --name ui -p 8081:8080 ${PWD##*/}-ui:dev
 ```
 
-[View UI](http://localhost:8080)
+[View UI](http://localhost:8081)
+
+## Environment variables
+
+To support running via docker or a cloud host, there are a number of environment variables available within this project that can be configured at run-time.
+
+To populate an initial set of environment variables, you can copy the `./ui/.env.example` file. Many of the docker commands in this `README` assume environment vairables can be loaded from `./ui/.env`.
+
+```bash
+cp ./ui/.env.example ./ui/.env
+```
+
+The following environment variables are currently configured:
+
+- `./ui/.env`
+  - `API_HOST` - The location (host name) of the API, used by NGINX for proxying.
+  - `API_PORT` - The location (port) of the API, used by NGINX for proxying.
+  - `API_PATH` - The path for requests to the API, used by NGINX for proxying.
 
 ## References
 
@@ -148,11 +166,10 @@ $ docker run --rm --network dotnet-container --name ui -p 8081:8080 ${PWD##*/}-u
 - [Publishing to Github packages](https://docs.github.com/en/actions/publishing-packages/publishing-docker-images)
 - [Serve Static Files with Nginx and Docker](https://sabe.io/tutorials/serve-static-files-nginx-docker)
 - [ESBuild dev proxy](https://esbuild.github.io/api/#serve-proxy)
+- [NGINX environment variables](https://hub.docker.com/_/nginx/)
 
 ## TODO
 
-- `env` file for port configuration etc, to support deployment.
-  - https://www.baeldung.com/linux/nginx-config-environment-variables
 - Certificates for SSL.
   - https://letsencrypt.org/docs/certificates-for-localhost/
   - https://phoenixnap.com/kb/letsencrypt-docker
