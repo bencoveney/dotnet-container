@@ -12,7 +12,7 @@ RUN dotnet publish -c Release -a $TARGETARCH -o /app
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app .
-ENV ASPNETCORE_HTTP_PORTS=80
-EXPOSE 80
+ENV ASPNETCORE_HTTP_PORTS=5000
+EXPOSE 5000
 USER $APP_UID
 ENTRYPOINT ["./api"]

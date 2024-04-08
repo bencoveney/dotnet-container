@@ -23,7 +23,7 @@ cp ./ui/.env.example ./ui/.env
 PROJECT=${PWD##*/} docker compose up --build
 ```
 
-[View UI](http://localhost:8081/) - [View API](http://localhost:8081/api/)
+[View UI](http://localhost:8081/) - [View API](http://localhost:8081/api/) - [View Swagger](http://localhost:8081/api/swagger)
 
 For many of the commands in the project, we rely on having a project name configured to name containers, packages etc. We use `${PWD##*/}` for this to grab the current directory name, but you can name it however you prefer.
 
@@ -36,7 +36,7 @@ graph LR
   host["Cloud entry point"]
   subgraph api["API"]
     direction TB
-    dotnet["Dotnet ASP (:80)"]
+    dotnet["Dotnet ASP (:5000)"]
   end
   subgraph ui["UI"]
     direction TB
@@ -53,14 +53,16 @@ This project does not define much infrastructure by design, and instead provides
 - Retain the front-end and use a different technology for the backend.
 - Add additional backend servers, or a database.
 
+The following workflows are generally supported:
+
+- Running in a development configuration directly on your machine, without docker as an intermediate layer.
+- Packaging in a release configuration as docker containers.
+
+The capability for running locally within docker is also included (e.g. via `docker compose`) so that the integration can be checked in a production-like environment.
+
 ## API
 
-The API binds to the following ports:
-
-- `:80` for HTTP in production (when running in a container).
-- `:5000` for HTTP in development (when running locally).
-
-The API does not expose an HTTPS endpoint. It is assumed the API server will not be directly exposed to the network, and instead traffic will instead be routed through the UI container.
+The API binds to the port `5000` for HTTP requests. The API does not expose an HTTPS endpoint. It is assumed the API server will not be directly exposed to the network, and instead traffic will instead be routed through the UI container.
 
 ### Running locally
 
@@ -75,7 +77,7 @@ dotnet run --project api
 
 ```bash
 docker build -t ${PWD##*/}-api:dev ./api
-docker run --rm --name api -p 5000:80 ${PWD##*/}-api:dev
+docker run --rm --name api -p 5000:5000 ${PWD##*/}-api:dev
 ```
 
 [View API](http://localhost:5000)
@@ -89,7 +91,7 @@ The UI binds to the following ports:
 
 The UI expects to be able to find the API at the following location:
 
-- `http://api:80/` in production (when running in a container).
+- `http://api:5000/` in production (when running in a container).
 - `http://localhost` in development (when running locally).
 
 To keep the project as flexible as possible, the UI only has 2 `npm` development dependencies:
@@ -166,7 +168,7 @@ The following environment variables are currently configured:
 - [Publishing to Github packages](https://docs.github.com/en/actions/publishing-packages/publishing-docker-images)
 - [Serve Static Files with Nginx and Docker](https://sabe.io/tutorials/serve-static-files-nginx-docker)
 - [ESBuild dev proxy](https://esbuild.github.io/api/#serve-proxy)
-- [NGINX environment variables](https://hub.docker.com/_/nginx/)
+- [NGINX environment variable templating](https://hub.docker.com/_/nginx/)
 
 ## TODO
 

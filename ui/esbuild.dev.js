@@ -11,7 +11,7 @@ import {
 loadEnvFile("./.env");
 const proxyPort = 5001;
 const esBuildPort = 5002;
-const apiPort = 5000; // process.env.API_PORT
+const apiPort = process.env.API_PORT;
 const apiPath = process.env.API_PATH;
 const localhost = "localhost"; // process.env.API_HOST
 
