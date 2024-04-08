@@ -1,0 +1,3 @@
+location /healthcheck {
+    return 200 'OK';
+}

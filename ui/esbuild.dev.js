@@ -60,6 +60,11 @@ http
         port: apiPort,
         path: req.url.substring(apiPath.length - 1),
       });
+    } else if (req.url === "/healthcheck") {
+      console.log(`${host}:${proxyPort}${req.url} => 200`);
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("OK");
+      return;
     } else {
       proxyRequest(req, res, {
         hostname: host,

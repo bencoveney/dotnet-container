@@ -159,6 +159,10 @@ The following environment variables are currently configured:
   - `API_PORT` - The location (port) of the API, used by NGINX for proxying.
   - `API_PATH` - The path for requests to the API, used by NGINX for proxying.
 
+## Healtcheck
+
+Both the API and UI expose a `/healthcheck` endpoint which can be used to validate that they are working correctly.
+
 ## References
 
 - [Dotnet console docker sample](https://github.com/dotnet/dotnet-docker/blob/main/samples/dotnetapp/README.md)

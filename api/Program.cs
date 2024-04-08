@@ -21,6 +21,7 @@ if (app.Environment.IsDevelopment())
   app.UseSwaggerUI();
 }
 
-app.MapGet("/", () => "Hello World!");
+// Healthcheck
+app.MapGet("/healthcheck", () => "OK");
 
 app.Run();
