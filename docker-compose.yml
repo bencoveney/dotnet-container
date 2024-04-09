@@ -20,6 +20,6 @@ services:
       - api
     restart: always
     ports:
-      - "8081:8080"
+      - "80:80"
     env_file:
       - ./ui/.env

@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 export const staticAssetsPath = "./static";
+export const certificatesPath = "./esbuild/certs";
 
 export const buildConfig = {
   entryPoints: ["src/index.ts"],
@@ -31,4 +32,15 @@ export function loadEnvFile(from) {
     const [key, value] = line.split("=").map((val) => val.trim());
     process.env[key] = value;
   });
+}
+
+export function loadCertificates(from) {
+  const exists = fs.existsSync(from);
+  if (!exists) {
+    return;
+  }
+  return {
+    key: fs.readFileSync(path.join(from, "localhost.key")),
+    cert: fs.readFileSync(path.join(from, "localhost.crt")),
+  };
 }

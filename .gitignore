@@ -1,9 +1,10 @@
-.mono/
+/.mono/
 
-.env
+/.env
 
-api/bin/
-api/obj/
+/api/bin/
+/api/obj/
 
-ui/node_modules/
-ui/build/
+/ui/node_modules/
+/ui/build/
+/ui/esbuild/certs/

@@ -23,7 +23,7 @@ cp ./ui/.env.example ./ui/.env
 PROJECT=${PWD##*/} docker compose up --build
 ```
 
-[View UI](http://localhost:8081/) - [View API](http://localhost:8081/api/) - [View Swagger](http://localhost:8081/api/swagger)
+[View UI](http://localhost/) - [View Swagger](http://localhost/api/swagger)
 
 For many of the commands in the project, we rely on having a project name configured to name containers, packages etc. We use `${PWD##*/}` for this to grab the current directory name, but you can name it however you prefer.
 
@@ -40,7 +40,7 @@ graph LR
   end
   subgraph ui["UI"]
     direction TB
-    nginx["NGINX (:8080)"]
+    nginx["NGINX (:80)"]
     static["Static Assets"]
     nginx-->static
   end
@@ -86,13 +86,13 @@ docker run --rm --name api -p 5000:5000 ${PWD##*/}-api:dev
 
 The UI binds to the following ports:
 
-- `:8081` for HTTP in production (when running in a container).
-- `:5002` for HTTP in development (when running locally).
+- `:80` for HTTP in production (when running in a container).
+- `:5001` for HTTP or `:5002` for HTTPS in development (when running locally).
 
 The UI expects to be able to find the API at the following location:
 
-- `http://api:5000/` in production (when running in a container).
-- `http://localhost` in development (when running locally).
+- `http://api:5000/` in production (when running in a container), configurable via environment variables.
+- `http://localhost:5000` in development (when running locally).
 
 To keep the project as flexible as possible, the UI only has 2 `npm` development dependencies:
 
@@ -112,9 +112,15 @@ For development builds:
 npm --prefix ui run dev
 ```
 
-[View UI](http://localhost:8081/)
+[View HTTP UI](http://localhost:5001/) - [View HTTPS UI](http://localhost:5002/)
 
 [NVM](https://github.com/nvm-sh/nvm) is recommended for managing node versions - see `.nvmrc`.
+
+#### HTTPS and SSL Certificates
+
+To install a dev certificate valid for `https://localhost` (for 365 days) you can run `dev-certs.sh` to generate SSL certificates. These will be stored under `./certs` and will need to be installed on your machine. The script output contains WSL installation instructions. You may need to restart your browser for the new root certificate to be picked up.
+
+This dev certificate will only be used when running a development build locally. The container build serves traffic as HTTP rather than HTTPS, to allow the certificate to be configured by the cloud provider.
 
 ### Running in Docker
 
@@ -129,7 +135,7 @@ The following commands would start the UI in isolation, however by default NGINX
 
 ```bash
 docker build -t ${PWD##*/}-ui:dev ./ui
-docker run --rm --env-file ./ui/.env --name ui -p 8081:8080 ${PWD##*/}-ui:dev
+docker run --rm --env-file ./ui/.env --name ui -p 80:80 ${PWD##*/}-ui:dev
 ```
 
 You will need to use a docker network to connect them together and perform similar port mappings yourself:
@@ -137,10 +143,10 @@ You will need to use a docker network to connect them together and perform simil
 ```bash
 docker network create dotnet-container
 docker run --rm --network dotnet-container --name api -p 5000:80 ${PWD##*/}-api:dev
-docker run --rm --network dotnet-container --env-file ./ui/.env --name ui -p 8081:8080 ${PWD##*/}-ui:dev
+docker run --rm --network dotnet-container --env-file ./ui/.env --name ui -p 80:80 ${PWD##*/}-ui:dev
 ```
 
-[View UI](http://localhost:8081)
+[View UI](http://localhost)
 
 ## Environment variables
 
@@ -163,6 +169,8 @@ The following environment variables are currently configured:
 
 Both the API and UI expose a `/healthcheck` endpoint which can be used to validate that they are working correctly.
 
+[UI Healthcheck](http://localhost/healthcheck) - [API Healthcheck](http://localhost/api/healthcheck)
+
 ## References
 
 - [Dotnet console docker sample](https://github.com/dotnet/dotnet-docker/blob/main/samples/dotnetapp/README.md)
@@ -173,12 +181,10 @@ Both the API and UI expose a `/healthcheck` endpoint which can be used to valida
 - [Serve Static Files with Nginx and Docker](https://sabe.io/tutorials/serve-static-files-nginx-docker)
 - [ESBuild dev proxy](https://esbuild.github.io/api/#serve-proxy)
 - [NGINX environment variable templating](https://hub.docker.com/_/nginx/)
+- [LetsEncrypt localhost certificate](https://letsencrypt.org/docs/certificates-for-localhost/)
 
 ## TODO
 
-- Certificates for SSL.
-  - https://letsencrypt.org/docs/certificates-for-localhost/
-  - https://phoenixnap.com/kb/letsencrypt-docker
 - Deployment steps for AWS (lightsail or other).
   - https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-container-services-deployments.html#creating-deployments-public-endpoint
   - docker pull ghcr.io/bencoveney/dotnet-container-ui:main

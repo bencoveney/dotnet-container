@@ -8,8 +8,8 @@
     "typescript": "^5.4.3"
   },
   "scripts": {
-    "dev": "node ./esbuild.dev.js",
-    "prod": "node ./esbuild.prod.js",
+    "dev": "node ./esbuild/esbuild.dev.js",
+    "prod": "node ./esbuild/esbuild.prod.js",
     "typecheck": "tsc -noEmit"
   }
 }
