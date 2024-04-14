@@ -161,6 +161,7 @@ cp ./ui/.env.example ./ui/.env
 The following environment variables are currently configured:
 
 - `./ui/.env`
+  - `API_PROTOCOL` - The protocol for reaching the API, used by NGINX for proxying.
   - `API_HOST` - The location (host name) of the API, used by NGINX for proxying.
   - `API_PORT` - The location (port) of the API, used by NGINX for proxying.
   - `API_PATH` - The path for requests to the API, used by NGINX for proxying.
@@ -189,5 +190,6 @@ Both the API and UI expose a `/healthcheck` endpoint which can be used to valida
   - https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-container-services-deployments.html#creating-deployments-public-endpoint
   - docker pull ghcr.io/bencoveney/dotnet-container-ui:main
   - docker pull ghcr.io/bencoveney/dotnet-container-api:main
+- Document CI
 - Think about logs, database.
 - Add cache busting and/or `/info` path - integrate git hash somehow.
