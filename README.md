@@ -172,6 +172,47 @@ Both the API and UI expose a `/healthcheck` endpoint which can be used to valida
 
 [UI Healthcheck](http://localhost/healthcheck) - [API Healthcheck](http://localhost/api/healthcheck)
 
+## Deployment
+
+This project aims not to be too coupled to any one cloud provider or host, to allow flexibility depending on your project's needs. With that being said, it can be useful to give an idea for how to get the app up and running somewhere, to give an understanding of what is involved.
+
+Generally you need to do the following:
+
+- Ensure the container packages can be accessed by the cloud provider. This example deploys the containers built by the Github Actions pipelines, hosted in the Github Container Registry. If you will be doing the same, you may need to set the packages visibility to public, to ensure Lightsail can access them.
+- Configure the API container to allow HTTP connections on port `5000` from the UI container. You will likely want to avoid exposing this port externally.
+- Configure the UI container to allow HTTP connections on port `80`.
+- Configure the UI container's environment variables, so that it knows how to route `/api/` requests to the API container.
+- Configure an externally facing load balancer (depending on your cloud provider) to provide the SSL certificates and connection to the external internet.
+
+### Deploy to AWS Lightsail
+
+[AWS Lightsail](https://aws.amazon.com/lightsail/) is a low cost/complexity platform that includes 3 months of credit in the AWS Free Tier at the time of writing.
+
+As we will be deploying multiple pre-built containers, we will need to create a "container service" within Lightsail. These are the values you'll need to configure:
+
+- Location: Up to you, I chose `eu-west-2`
+- Container Service Capacity: `Micro` power and `x1` scale for AWS Free Tier
+- Deployment: `Specify a custom deployment`
+  - 1st Container:
+    - Name: `api`
+    - Image: `ghcr.io/bencoveney/dotnet-container-api:sha-ae98b7e` - _Update to point to your registry/container._
+    - Open Ports:
+      - `5000`: `HTTP`
+  - 2nd Container:
+    - Name: `ui`
+    - Image: `ghcr.io/bencoveney/dotnet-container-ui:sha-ae98b7e` - _Update to point to your registry/container._
+    - Environment Variable Values:
+      - `API_PROTOCOL`: `http`
+      - `API_HOST`: `localhost`
+      - `API_PORT`: `5000`
+      - `API_PATH`: `/api/`
+    - Open Ports:
+      - `80` - `HTTP`
+  - Public endpoint: - Container: `ui` - Port: `80` - Health check path: `/` or `/healthcheck`
+    Identify your service: `container-service-1` - _This can be whatever you want._
+
+A sample deployed application can be found here: [UI](https://container-service-1.19iaj1mj95gdk.eu-west-2.cs.amazonlightsail.com/) - [UI Healthcheck](https://container-service-1.19iaj1mj95gdk.eu-west-2.cs.amazonlightsail.com/healthcheck) - [API Healthcheck](https://container-service-1.19iaj1mj95gdk.eu-west-2.cs.amazonlightsail.com/api/healthcheck)
+
 ## References
 
 - [Dotnet console docker sample](https://github.com/dotnet/dotnet-docker/blob/main/samples/dotnetapp/README.md)
@@ -184,12 +225,14 @@ Both the API and UI expose a `/healthcheck` endpoint which can be used to valida
 - [NGINX environment variable templating](https://hub.docker.com/_/nginx/)
 - [LetsEncrypt localhost certificate](https://letsencrypt.org/docs/certificates-for-localhost/)
 
-## TODO
+## Future Ideas:
 
-- Deployment steps for AWS (lightsail or other).
-  - https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-container-services-deployments.html#creating-deployments-public-endpoint
-  - docker pull ghcr.io/bencoveney/dotnet-container-ui:main
-  - docker pull ghcr.io/bencoveney/dotnet-container-api:main
-- Document CI
-- Think about logs, database.
-- Add cache busting and/or `/info` path - integrate git hash somehow.
+- Documentation covering CI pipelines.
+- Simplify environment variables
+  - `API_PATH` probably isn't required.
+  - `API_PROTOCOL` probably isn't required.
+  - `API_HOST` and `API_PORT` can probably be consolidated
+- Add a database (container, cloud deployment plan incl. migrations etc).
+- Add cache busting.
+- Add an `/info` endpoint or extend the healthcheck.
+- Extend the app with some simple functionality to demonstrate the end-to-end functionality.
