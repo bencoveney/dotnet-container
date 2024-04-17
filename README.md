@@ -20,12 +20,10 @@ The goals of this project are:
 
 ```bash
 cp ./ui/.env.example ./ui/.env
-PROJECT=${PWD##*/} docker compose up --build
+docker compose up --build
 ```
 
 [View UI](http://localhost/) - [View Swagger](http://localhost/api/swagger)
-
-For many of the commands in the project, we rely on having a project name configured to name containers, packages etc. We use `${PWD##*/}` for this to grab the current directory name, but you can name it however you prefer.
 
 ## Project Structure
 

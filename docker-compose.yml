@@ -1,7 +1,7 @@
 services:
   api:
-    container_name: $PROJECT-api
-    image: $PROJECT-api:dev
+    container_name: $COMPOSE_PROJECT_NAME-api
+    image: $COMPOSE_PROJECT_NAME-api:dev
     build:
       context: ./api
       dockerfile: Dockerfile
@@ -11,8 +11,8 @@ services:
     environment:
       DOTNET_ENVIRONMENT: Development
   ui:
-    container_name: $PROJECT-ui
-    image: $PROJECT-ui:dev
+    container_name: $COMPOSE_PROJECT_NAME-ui
+    image: $COMPOSE_PROJECT_NAME-ui:dev
     build:
       context: ./ui
       dockerfile: Dockerfile
