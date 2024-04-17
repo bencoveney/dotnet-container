@@ -1,3 +1,9 @@
 import "./index.module.css";
 
-console.log("Hello World!");
+fetch("/api/healthcheck")
+  .then((res) => res.text())
+  .then((text) => {
+    const paragraph = document.createElement("p");
+    paragraph.innerText = `Server Healthcheck: ${text}`;
+    document.body.appendChild(paragraph);
+  });

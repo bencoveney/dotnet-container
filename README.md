@@ -233,4 +233,3 @@ A sample deployed application can be found here: [UI](https://container-service-
 - Add a database (container, cloud deployment plan incl. migrations etc).
 - Add cache busting.
 - Add an `/info` endpoint or extend the healthcheck.
-- Extend the app with some simple functionality to demonstrate the end-to-end functionality.
